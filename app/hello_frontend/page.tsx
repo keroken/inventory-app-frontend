@@ -1,0 +1,18 @@
+'use client'
+
+import axios from 'axios'
+import { useState, useEffect } from 'react'
+
+export default function Page() {
+    const [data, setData] = useState({ name: '' })
+
+    useEffect(() => {
+        axios('/api/hello')
+        .then((res) => res.data)
+        .then((data) => {
+            setData(data)
+        })
+    }, [])
+
+    return <div>hello {data.name}!</div>
+}
