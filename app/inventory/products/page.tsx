@@ -9,11 +9,18 @@ import { clsx } from 'clsx'
 import { Layout } from '@/app/components/layout'
 
 type ProductsData = {
-  id: number;
-  name: string;
-  price: number;
-  description: string;
+  id: number
+  name: string
+  price: number
+  description: string
 };
+
+type InputData = {
+  id: string
+  name: string
+  price: string
+  descripsion: string
+}
 
 export default function Page() {
   const [data, setData] = useState<Array<ProductsData>>([])
