@@ -1,8 +1,8 @@
 export default function Page() {
-    return (
-        <>
-            <h2>ログイン</h2>
-            <p>ログインの入力項目を表示</p>
-        </>
-    )
+  return (
+    <>
+      <h2>ログイン</h2>
+      <p>ログインの入力項目を表示</p>
+    </>
+  )
 }
