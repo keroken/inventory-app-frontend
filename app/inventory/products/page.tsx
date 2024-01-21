@@ -8,7 +8,7 @@ import { PressEvent } from 'react-aria'
 import { clsx } from 'clsx'
 import { Layout } from '@/app/components/layout'
 
-type ProductsData = {
+type ProductData = {
   id: number
   name: string
   price: number
@@ -19,32 +19,56 @@ type InputData = {
   id: string
   name: string
   price: string
-  descripsion: string
+  description: string
 }
 
 export default function Page() {
-  const [data, setData] = useState<Array<ProductsData>>([])
+  const [data, setData] = useState<Array<ProductData>>([])
 
   useEffect(() => {
     setData(productsData);
   }, [])
 
+  // keep registerd data state
+  const [input, setInput] = useState<InputData>({
+    id: "",
+    name: "",
+    price: "",
+    description: "",
+  })
+
+  // update registered data
+  const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = event.target
+    setInput({ ...input, [name]: value })
+  }
+
+  // keep newly registered data
   const [showNewRow, setShowNewRow] = useState(false)
   const handleShowNewRow = (event: PressEvent) => {
     setShowNewRow(true)
   }
-  const handleAddCancel = (event: PressEvent) => {
+  const handleAddCancel = (event: any) => {
+    event.preventDefault()
     setShowNewRow(false)
   }
-  const handleAdd = (event: PressEvent) => {
+  const handleAdd = (event: any) => {
+    event.preventDefault()
     // backend: add item process
     setShowNewRow(false)
   }
 
+  // update and delete operations
   const [editingRow, setEditingRow] = useState(0)
   const handleEditRow: any = (id: number) => {
-    setShowNewRow(false)
     setEditingRow(id)
+    const selectedProduct: ProductData = data.find((v) => v.id == id) as ProductData
+    setInput({
+      id: id.toString(),
+      name: selectedProduct.name,
+      price: selectedProduct.price.toString(),
+      description: selectedProduct.description,
+    })
   }
 
   const handleEditCancel: any = (id: number) => {
@@ -52,11 +76,10 @@ export default function Page() {
   }
 
   const handleEdit: any = (id: number) => {
-    setEditingRow(id)
+    setEditingRow(0)
   }
 
   const handleDelete: any = (id: number) => {
-
     setEditingRow(0)
   }
 
@@ -84,20 +107,23 @@ export default function Page() {
             {showNewRow ? (
               <tr>
                 <td className={CellClasses}></td>
-                <td className={CellClasses}><input type="text" /></td>
-                <td className={CellClasses}><input type="number" /></td>
-                <td className={CellClasses}><input type="text" /></td>
+                <td className={CellClasses}><input type="text" name="name" onChange={handleInput} /></td>
+                <td className={CellClasses}><input type="number" name="price" onChange={handleInput} /></td>
+                <td className={CellClasses}><input type="text" name="description" onChange={handleInput} /></td>
                 <td className={CellClasses}></td>
-                <td className={CellClasses}><Button variant="secondary" onPress={handleAddCancel}>キャンセル</Button></td>
+                <td className={CellClasses}>
+                  <button onClick={(event) => handleAddCancel(event)}>キャンセル</button>
+                  <button onClick={(event) => handleAdd(event)}>登録する</button>
+                </td>
               </tr>
             ) : ""}
             {data.map((data: any) => (
               editingRow === data.id ? (
                 <tr key={data.id}>
                   <td className={CellClasses}>{data.id}</td>
-                  <td className={CellClasses}><input type="text" defaultValue={data.name} /></td>
-                  <td className={CellClasses}><input type="number" defaultValue={data.price} /></td>
-                  <td className={CellClasses}><input type="text" defaultValue={data.description} /></td>
+                  <td className={CellClasses}><input type="text" defaultValue={data.name} value={input.name} name="name" onChange={handleInput} /></td>
+                  <td className={CellClasses}><input type="number" defaultValue={data.price} value={input.price} name="price" onChange={handleInput} /></td>
+                  <td className={CellClasses}><input type="text" defaultValue={data.description} value={input.description} name="description" onChange={handleInput} /></td>
                   <td className={clsx(CellClasses, 'w-20 text-center')}></td>
                   <td className={clsx(CellClasses, 'w-32 text-center')}>
                     <button onClick={() => handleEditCancel(data.id)}>キャンセル</button>
