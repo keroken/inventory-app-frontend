@@ -6,7 +6,6 @@ import productsData from './sample/products.json'
 import Link from 'next/link'
 import { defaultTheme, Provider } from '@adobe/react-spectrum'
 import { clsx } from 'clsx'
-import { Layout } from '@/app/components/layout'
 
 type ProductData = {
   id: number | null
@@ -96,27 +95,48 @@ export default function Page() {
 
   return (
     <Provider theme={defaultTheme}>
-      <Layout>
-        <h2 className="font-bold text-xl pb-6">商品一覧</h2>
-        <div className="pb-6">
-          <button type="button" onClick={handleShowNewRow}>商品を追加</button>
-        </div>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <table>
-            <thead className="border-b-4 border-sky-500">
+      <h2 className="font-bold text-xl pb-6">商品一覧</h2>
+      <div className="pb-6">
+        <button type="button" onClick={handleShowNewRow}>商品を追加</button>
+      </div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <table>
+          <thead className="border-b-4 border-sky-500">
+            <tr>
+              <th>商品ID</th>
+              <th>商品名</th>
+              <th>単価</th>
+              <th>説明</th>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {id === null ? (
               <tr>
-                <th>商品ID</th>
-                <th>商品名</th>
-                <th>単価</th>
-                <th>説明</th>
-                <th></th>
-                <th></th>
+                <td className={CellClasses}></td>
+                <td className={CellClasses}>
+                  <input type="text" id="name" {...register("name", { required: true, maxLength: 100 })} />
+                  {errors.name && (<div>100文字以内の商品名を入力してください</div>)}
+                </td>
+                <td className={CellClasses}>
+                  <input type="number" id="price" {...register("price", { required: true, min: 1, max: 99999999 })} />
+                  {errors.name && (<div>1から99999999の数値を入力してください</div>)}
+                </td>
+                <td className={CellClasses}>
+                  <input type="text" id="description" {...register("description")} />
+                </td>
+                <td className={CellClasses}></td>
+                <td className={CellClasses}>
+                  <button type="button" onClick={() => handleAddCancel()}>キャンセル</button>
+                  <button type="submit" onClick={() => setAction("add")}>登録する</button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {id === null ? (
-                <tr>
-                  <td className={CellClasses}></td>
+            ) : ""}
+            {data.map((data: any) => (
+              id === data.id ? (
+                <tr key={data.id}>
+                  <td className={CellClasses}>{data.id}</td>
                   <td className={CellClasses}>
                     <input type="text" id="name" {...register("name", { required: true, maxLength: 100 })} />
                     {errors.name && (<div>100文字以内の商品名を入力してください</div>)}
@@ -128,50 +148,27 @@ export default function Page() {
                   <td className={CellClasses}>
                     <input type="text" id="description" {...register("description")} />
                   </td>
-                  <td className={CellClasses}></td>
-                  <td className={CellClasses}>
-                    <button type="button" onClick={() => handleAddCancel()}>キャンセル</button>
-                    <button type="submit" onClick={() => setAction("add")}>登録する</button>
+                  <td className={clsx(CellClasses, 'w-20 text-center')}></td>
+                  <td className={clsx(CellClasses, 'w-32 text-center')}>
+                    <button type="button" onClick={() => handleEditCancel()}>キャンセル</button>
+                    <button type="submit" onClick={() => setAction("update")}>更新する</button>
+                    <button type="submit" onClick={() => setAction("delete")}>削除する</button>
                   </td>
                 </tr>
-              ) : ""}
-              {data.map((data: any) => (
-                id === data.id ? (
-                  <tr key={data.id}>
-                    <td className={CellClasses}>{data.id}</td>
-                    <td className={CellClasses}>
-                      <input type="text" id="name" {...register("name", { required: true, maxLength: 100 })} />
-                      {errors.name && (<div>100文字以内の商品名を入力してください</div>)}
-                    </td>
-                    <td className={CellClasses}>
-                      <input type="number" id="price" {...register("price", { required: true, min: 1, max: 99999999 })} />
-                      {errors.name && (<div>1から99999999の数値を入力してください</div>)}
-                    </td>
-                    <td className={CellClasses}>
-                      <input type="text" id="description" {...register("description")} />
-                    </td>
-                    <td className={clsx(CellClasses, 'w-20 text-center')}></td>
-                    <td className={clsx(CellClasses, 'w-32 text-center')}>
-                      <button type="button" onClick={() => handleEditCancel()}>キャンセル</button>
-                      <button type="submit" onClick={() => setAction("update")}>更新する</button>
-                      <button type="submit" onClick={() => setAction("delete")}>削除する</button>
-                    </td>
-                  </tr>
-                ) : (
-                  <tr key={data.id}>
-                    <td className={CellClasses}>{data.id}</td>
-                    <td className={CellClasses}>{data.name}</td>
-                    <td className={CellClasses}>{data.price}</td>
-                    <td className={CellClasses}>{data.description}</td>
-                    <td className={clsx(CellClasses, 'w-20 text-center')}><Link href={`/inventory/products/${data.id}`}>在庫処理</Link></td>
-                    <td className={clsx(CellClasses, 'w-32 text-center')}><button onClick={() => handleEditRow(data.id)}>更新・削除</button></td>
-                  </tr>
-                )
-              ))}
-            </tbody>
-          </table>
-        </form>
-      </Layout>
+              ) : (
+                <tr key={data.id}>
+                  <td className={CellClasses}>{data.id}</td>
+                  <td className={CellClasses}>{data.name}</td>
+                  <td className={CellClasses}>{data.price}</td>
+                  <td className={CellClasses}>{data.description}</td>
+                  <td className={clsx(CellClasses, 'w-20 text-center')}><Link href={`/inventory/products/${data.id}`}>在庫処理</Link></td>
+                  <td className={clsx(CellClasses, 'w-32 text-center')}><button onClick={() => handleEditRow(data.id)}>更新・削除</button></td>
+                </tr>
+              )
+            ))}
+          </tbody>
+        </table>
+      </form>
     </Provider>
   )
 }
