@@ -35,7 +35,7 @@ export default function Page() {
   const ContainerClasses = 'w-full h-screen flex flex-col items-center'
   const LabelClasses = 'w-full h-8 p-2'
   const InputClasses = 'w-full h-8 p-2 rounded border border-gray-500'
-  const ButtonClasses = 'bg-blue-500 text-white py-2 rounded mt-6'
+  const ButtonClasses = 'bg-blue-500 text-white py-2 rounded mt-6 hover:bg-blue-700'
 
   return (
     <div className={ContainerClasses}>
