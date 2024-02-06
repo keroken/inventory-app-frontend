@@ -35,11 +35,11 @@ export default function Page() {
   const ContainerClasses = 'w-full h-screen flex flex-col items-center'
   const LabelClasses = 'w-full h-8 p-2'
   const InputClasses = 'w-full h-8 p-2 rounded border border-gray-500'
-  const ButtonClasses = 'bg-blue-500 text-white py-2 rounded'
+  const ButtonClasses = 'bg-blue-500 text-white py-2 rounded mt-6'
 
   return (
     <div className={ContainerClasses}>
-      <form className="flex flex-col w-{200} gap-4" >
+      <form className="flex flex-col m-auto w-{200} gap-4" >
         <div>
           <label className={LabelClasses} htmlFor="username">user name</label>
           <input className={InputClasses} type="text" id="username" {...register("username", { required: "必須入力です" })} />
